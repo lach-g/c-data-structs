@@ -1,9 +1,8 @@
-# My Basic Data Structures in C
+# Simple Data Structures in C Headers
 
 ## About
 
 I wanted to define a common set of data structures that would be handy in any project. This is a start
-
 
 ## TODOs
 

@@ -9,22 +9,22 @@ typedef struct {
   size_t count;
   size_t capacity;
   void** array;
-} Vector;
+} LVector;
 
 /**
 *
-* @brief This function creates a Vector
+* @brief This function creates a vector
 *
 * @param capacity The size of the initial array within the vector
 * 
-* @return NULL if failure, otherwise a pointer to the allocated Vector
+* @return NULL if failure, otherwise a pointer to the allocated vector
 *
 */
-Vector* lach_Vector_create(size_t capacity);
+LVector* lach_LVector_create(size_t capacity);
 
 /**
 *
-* @brief This function appends to a Vector
+* @brief This function appends to a vector
 *
 * @param vec The vector to append to
 * @param data The data to append to the vector
@@ -32,7 +32,7 @@ Vector* lach_Vector_create(size_t capacity);
 * @return 1 for failure (reallocation failed), 0 for success
 *
 */
-int lach_Vector_append(Vector* vec, void* data);
+int lach_LVector_append(LVector* vec, void* data);
 
 /**
 *
@@ -41,22 +41,22 @@ int lach_Vector_append(Vector* vec, void* data);
 * @param vec The vector to index
 * @param index The index to get
 * 
-* @return NULL if failure (Vector is null, index >= capacity of vector)
+* @return NULL if failure (vector is null, index >= capacity of vector)
 * otherwise a pointer to the data
 *
 */
-void* lach_Vector_get(Vector* vec, size_t index);
+void* lach_LVector_get(LVector* vec, size_t index);
 
 /**
 *
-* @brief This function frees the Vector array and Vector
+* @brief This function frees the vector array and vector
 *
 * @param vec The vector to free
 * 
-* @return 1 for failure (Vector is null), 0 for success
+* @return 1 for failure (vector is null), 0 for success
 *
 */
-int lach_Vector_free(Vector* vec);
+int lach_LVector_free(LVector* vec);
 
 //***************************************************************
 // 
@@ -64,13 +64,13 @@ int lach_Vector_free(Vector* vec);
 // 
 //***************************************************************
 
-Vector* lach_Vector_create(size_t capacity)
+LVector* lach_LVector_create(size_t capacity)
 {
   if (capacity == 0) {
     capacity = 255; // TODO: Default size #define?
   }
   
-  Vector* vec = (Vector*)calloc(1, sizeof(Vector));
+  LVector* vec = (LVector*)calloc(1, sizeof(LVector));
   if (vec == NULL) {
     printf("Vector allocation failed.\n"); // TODO: Consistent error handling
     return NULL;
@@ -87,7 +87,7 @@ Vector* lach_Vector_create(size_t capacity)
   return vec;
 }
 
-int lach_Vector_append(Vector* vec, void* data)
+int lach_LVector_append(LVector* vec, void* data)
 {
   if (vec->count++ > vec->capacity) {
     vec->capacity *= 2;
@@ -102,7 +102,7 @@ int lach_Vector_append(Vector* vec, void* data)
   return 0;
 }
 
-void* lach_Vector_get(Vector* vec, size_t index)
+void* lach_LVector_get(LVector* vec, size_t index)
 {
   if (vec == NULL) {
     printf("Vector is NULL.\n");
@@ -117,7 +117,7 @@ void* lach_Vector_get(Vector* vec, size_t index)
   return vec->array[index];
 }
 
-int lach_Vector_free(Vector* vec)
+int lach_LVector_free(LVector* vec)
 {
   if (vec == NULL) {
     printf("Vector is NULL.\n");

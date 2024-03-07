@@ -4,17 +4,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef struct ListNode ListNode;
+typedef struct LListNode LListNode;
 
-struct ListNode {
+struct LListNode {
   void* data;
-  ListNode* next;
+  LListNode* next;
 };
 
-ListNode* lach_ListNode_create(void* data);
-int lach_ListNode_append(ListNode* node, void* data);
-void* lach_ListNode_get(ListNode* node, int index);
-void lach_ListNode_free(ListNode* head);
+LListNode* lach_LListNode_create(void* data);
+int lach_LListNode_append(LListNode* node, void* data);
+void* lach_LListNode_get(LListNode* node, int index);
+void lach_LListNode_free(LListNode* head);
 
 
 //***************************************************************
@@ -25,9 +25,9 @@ void lach_ListNode_free(ListNode* head);
 
 
 // TODO: Input checks
-ListNode* lach_ListNode_create(void* data)
+LListNode* lach_LListNode_create(void* data)
 {
-  ListNode* node = (ListNode*)calloc(1, sizeof(ListNode));
+  LListNode* node = (LListNode*)calloc(1, sizeof(LListNode));
   if (node == NULL) {
     printf("ListNode* create(void* data) failed to allocate memory\n");
     return NULL;
@@ -39,9 +39,9 @@ ListNode* lach_ListNode_create(void* data)
   return node;
 }
 
-int lach_ListNode_append(ListNode* node, void* data)
+int lach_LListNode_append(LListNode* node, void* data)
 {
-  ListNode* new = lach_ListNode_create(data);
+  LListNode* new = lach_LListNode_create(data);
   if (new == NULL) {
     printf("int append(ListNode* node, void* data) failed to create a ListNode\n");
     return 1;
@@ -55,7 +55,7 @@ int lach_ListNode_append(ListNode* node, void* data)
   return 0;
 }
 
-void* lach_ListNode_get(ListNode* node, int index)
+void* lach_LListNode_get(LListNode* node, int index)
 {
   if (index < 0) {
     printf("Index %d must be 0 or greater.\n", index);
@@ -76,11 +76,11 @@ void* lach_ListNode_get(ListNode* node, int index)
   return NULL;
 }
 
-void lach_ListNode_free(ListNode* head)
+void lach_LListNode_free(LListNode* head)
 {
-  ListNode* curr = head;
+  LListNode* curr = head;
   while (curr->next != NULL) {
-    ListNode* prev = curr;
+    LListNode* prev = curr;
     curr = curr->next;
     free(prev);
   }

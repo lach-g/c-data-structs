@@ -8,19 +8,19 @@
 typedef struct {
   char* key;
   void* value;
-} HashNode;
+} LHashNode;
 
 // TODO: Use a vector?
 typedef struct {
   size_t capacity;
   size_t count;
-  HashNode** array;
-} HashTable;
+  LHashNode** array;
+} LHashTable;
 
 
-HashTable* lach_HashTable_create(size_t capacity);
-int lach_HashTable_insert(HashTable* table, char* key, void* value);
-void* lach_HashTable_get(HashTable* table, char* key);
+LHashTable* lach_LHashTable_create(size_t capacity);
+int lach_LHashTable_insert(LHashTable* table, char* key, void* value);
+void* lach_LHashTable_get(LHashTable* table, char* key);
 
 
 //***************************************************************
@@ -30,12 +30,12 @@ void* lach_HashTable_get(HashTable* table, char* key);
 //***************************************************************
 
 
-HashNode* create_HashNode(char* key, void* value)
+LHashNode* lach_LHashNode_create(char* key, void* value)
 {
   // TODO: Input checks for functions
-  HashNode* node = (HashNode*)calloc(1, sizeof(HashNode));
+  LHashNode* node = (LHashNode*)calloc(1, sizeof(LHashNode));
   if (node == NULL) {
-    printf("HashNode* create_hashnode(char* key, void* value) could not allocate for HashNode.\n");
+    printf("lach_HashNode* create_hashnode(char* key, void* value) could not allocate for HashNode.\n");
     return NULL;
   }
 
@@ -45,15 +45,15 @@ HashNode* create_HashNode(char* key, void* value)
   return node;
 }
 
-HashTable* lach_HashTable_create(size_t capacity)
+LHashTable* lach_LHashTable_create(size_t capacity)
 {
-  HashTable* table = (HashTable*)calloc(1, sizeof(HashTable));
+  LHashTable* table = (LHashTable*)calloc(1, sizeof(LHashTable));
   if (table == NULL) {
     printf("HashTable* create_hashtable(size_t capacity) could not allocate for HashTable.\n");
     return NULL;
   }
 
-  table->array = (HashNode**)calloc(capacity, sizeof(HashNode*));
+  table->array = (LHashNode**)calloc(capacity, sizeof(LHashNode*));
   if (table->array == NULL) {
     printf("HashTable* create_hashtable(size_t capacity) could not allocate for HashTable array pointer.\n");
     return NULL;
@@ -64,7 +64,7 @@ HashTable* lach_HashTable_create(size_t capacity)
   return table;
 }
 
-int hash(HashTable* table, char* key)
+int lach_hash(LHashTable* table, char* key)
 {
     unsigned long val = 0;
     int c;
@@ -76,11 +76,11 @@ int hash(HashTable* table, char* key)
     return val % table->capacity;
 }
 
-int lach_HashTable_insert(HashTable* table, char* key, void* value)
+int lach_LHashTable_insert(LHashTable* table, char* key, void* value)
 {
   if (table->count < table->capacity) {
-    int i = hash(table, key);
-    HashNode* node = create_HashNode(key, value);
+    int i = lach_hash(table, key);
+    LHashNode* node = lach_LHashNode_create(key, value);
     table->array[i] = node;
     table->count++;
     return 0; // TODO: Error codes?
@@ -90,10 +90,10 @@ int lach_HashTable_insert(HashTable* table, char* key, void* value)
   }
 }
 
-void* lach_HashTable_get(HashTable* table, char* key)
+void* lach_LHashTable_get(LHashTable* table, char* key)
 {
-  int i = hash(table, key);
-  HashNode* node = table->array[i];
+  int i = lach_hash(table, key);
+  LHashNode* node = table->array[i];
   if (node != NULL) {
     return node->value;
   } else {

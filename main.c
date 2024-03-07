@@ -17,19 +17,19 @@ void print_tag(Tag* tag)
   printf("Tag(id=%d, data_type=%c, value=%ld)\n", tag->id, tag->data_type, tag->value);
 }
 
-void test_ListNode(void)
+void test_LListNode(void)
 {
   Tag tag1 = { .id = 1, .data_type = 'I', .value = 42 };
   Tag tag2 = { .id = 2, .data_type = 'J', .value = 69 };
   Tag tag3 = { .id = 3, .data_type = 'K', .value = 420 };
 
-  ListNode* head = lach_ListNode_create((void*)&tag1);
-  lach_ListNode_append(head, (void*)&tag2);
-  lach_ListNode_append(head, (void*)&tag3);
+  LListNode* head = lach_LListNode_create((void*)&tag1);
+  lach_LListNode_append(head, (void*)&tag2);
+  lach_LListNode_append(head, (void*)&tag3);
 
-  Tag* maybe_1 = (Tag*)lach_ListNode_get(head, 0);
-  Tag* maybe_2 = (Tag*)lach_ListNode_get(head, 1);
-  Tag* maybe_3 = (Tag*)lach_ListNode_get(head, 2);
+  Tag* maybe_1 = (Tag*)lach_LListNode_get(head, 0);
+  Tag* maybe_2 = (Tag*)lach_LListNode_get(head, 1);
+  Tag* maybe_3 = (Tag*)lach_LListNode_get(head, 2);
 
   // Test tag 1
   assert(maybe_1->id == tag1.id);
@@ -47,10 +47,10 @@ void test_ListNode(void)
   assert(maybe_3->value == tag3.value);
   
   
-  lach_ListNode_free(head);
+  lach_LListNode_free(head);
 }
 
-void test_HashTable(void)
+void test_LHashTable(void)
 {
   char tag1_name[] = "tag1";
   char tag2_name[] = "tag2";
@@ -60,14 +60,14 @@ void test_HashTable(void)
   Tag tag2 = { .id = 2, .data_type = 'J', .value = 69 };
   Tag tag3 = { .id = 3, .data_type = 'K', .value = 420 };
 
-  HashTable* table = lach_HashTable_create(128);
-  lach_HashTable_insert(table, tag1_name, (void*)&tag1);
-  lach_HashTable_insert(table, tag2_name, (void*)&tag2);
-  lach_HashTable_insert(table, tag3_name, (void*)&tag3);
+  LHashTable* table = lach_LHashTable_create(128);
+  lach_LHashTable_insert(table, tag1_name, (void*)&tag1);
+  lach_LHashTable_insert(table, tag2_name, (void*)&tag2);
+  lach_LHashTable_insert(table, tag3_name, (void*)&tag3);
 
-  Tag* maybe_1 = (Tag*)lach_HashTable_get(table, tag1_name);
-  Tag* maybe_2 = (Tag*)lach_HashTable_get(table, tag2_name);
-  Tag* maybe_3 = (Tag*)lach_HashTable_get(table, tag3_name);
+  Tag* maybe_1 = (Tag*)lach_LHashTable_get(table, tag1_name);
+  Tag* maybe_2 = (Tag*)lach_LHashTable_get(table, tag2_name);
+  Tag* maybe_3 = (Tag*)lach_LHashTable_get(table, tag3_name);
 
   // Test tag 1
   assert(maybe_1->id == tag1.id);
@@ -85,25 +85,25 @@ void test_HashTable(void)
   assert(maybe_3->value == tag3.value);
 }
 
-void test_Vector(void)
+void test_LVector(void)
 {
   Tag tag1 = { .id = 1, .data_type = 'I', .value = 42 };
   Tag tag2 = { .id = 2, .data_type = 'J', .value = 69 };
   Tag tag3 = { .id = 3, .data_type = 'K', .value = 420 };
 
-  Vector* vec = lach_Vector_create(0);
+  LVector* vec = lach_LVector_create(0);
   if (vec == NULL) {
     printf("Failed creating vector.\n");
     exit(1);
   }
   
-  lach_Vector_append(vec, &tag1);
-  lach_Vector_append(vec, &tag2);
-  lach_Vector_append(vec, &tag3);
+  lach_LVector_append(vec, &tag1);
+  lach_LVector_append(vec, &tag2);
+  lach_LVector_append(vec, &tag3);
   
-  Tag* maybe_1 = (Tag*)lach_Vector_get(vec, 0);
-  Tag* maybe_2 = (Tag*)lach_Vector_get(vec, 1);
-  Tag* maybe_3 = (Tag*)lach_Vector_get(vec, 2);
+  Tag* maybe_1 = (Tag*)lach_LVector_get(vec, 0);
+  Tag* maybe_2 = (Tag*)lach_LVector_get(vec, 1);
+  Tag* maybe_3 = (Tag*)lach_LVector_get(vec, 2);
 
   // Test tag 1
   assert(maybe_1->id == tag1.id);
@@ -125,13 +125,13 @@ void test_Vector(void)
 
 int main(void)
 {
-  test_HashTable();
+  test_LHashTable();
   printf("HashTable test completed.\n");
   
-  test_Vector();
+  test_LVector();
   printf("Vector test completed.\n");
   
-  test_ListNode();
+  test_LListNode();
   printf("ListNode test completed.\n");
   
   printf("Tests ran successfully.\n");
