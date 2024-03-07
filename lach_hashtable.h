@@ -122,12 +122,12 @@ void* lach_LHashTable_get(LHashTable* table, char* key)
 {
   if (table == NULL) {
     printf("Table is NULL.\n");
-    return 1;
+    return NULL;
   }
   
   if (key == NULL) {
     printf("Key is NULL.\n");
-    return 1;
+    return NULL;
   }
   
   int i = lach_hash(table, key);
