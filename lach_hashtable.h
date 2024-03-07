@@ -18,18 +18,6 @@ typedef struct {
 } LHashTable;
 
 
-LHashTable* lach_LHashTable_create(size_t capacity);
-int lach_LHashTable_insert(LHashTable* table, char* key, void* value);
-void* lach_LHashTable_get(LHashTable* table, char* key);
-
-
-//***************************************************************
-// 
-// Implementations
-// 
-//***************************************************************
-
-
 LHashNode* lach_LHashNode_create(char* key, void* value)
 {
   // TODO: Input checks for functions

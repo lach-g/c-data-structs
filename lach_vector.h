@@ -33,6 +33,7 @@ typedef struct {
   void** array;
 } LVector;
 
+
 /**
 *
 * @brief This function creates a vector
@@ -42,50 +43,6 @@ typedef struct {
 * @return NULL if failure, otherwise a pointer to the allocated vector
 *
 */
-LVector* lach_LVector_create(size_t capacity);
-
-/**
-*
-* @brief This function appends to a vector
-*
-* @param vec The vector to append to
-* @param data The data to append to the vector
-* 
-* @return 1 for failure (reallocation failed), 0 for success
-*
-*/
-int lach_LVector_append(LVector* vec, void* data);
-
-/**
-*
-* @brief This function gets the data at the specified index
-*
-* @param vec The vector to index
-* @param index The index to get
-* 
-* @return NULL if failure (vector is null, index >= capacity of vector)
-* otherwise a pointer to the data
-*
-*/
-void* lach_LVector_get(LVector* vec, size_t index);
-
-/**
-*
-* @brief This function frees the vector array and vector
-*
-* @param vec The vector to free
-* 
-* @return 1 for failure (vector is null), 0 for success
-*
-*/
-int lach_LVector_free(LVector* vec);
-
-//***************************************************************
-// 
-// Implementations
-// 
-//***************************************************************
-
 LVector* lach_LVector_create(size_t capacity)
 {
   if (capacity == 0) {
@@ -109,13 +66,25 @@ LVector* lach_LVector_create(size_t capacity)
   return vec;
 }
 
+/**
+*
+* @brief This function appends to a vector
+*
+* @param vec The vector to append to
+* @param data The data to append to the vector
+* 
+* @return 1 for failure (reallocation failed), 0 for success
+*
+*/
 int lach_LVector_append(LVector* vec, void* data)
 {
   if (vec->count++ > vec->capacity) {
     vec->capacity *= 2;
     vec->array = (void**)realloc(vec->array, vec->capacity * sizeof(void*));
     if (vec->array == NULL) {
-      LACH_DEBUG_PRINT("Vector array reallocation failed. Count = %ld and Capacity = %ld.\n", vec->count, vec->capacity);
+      LACH_DEBUG_PRINT("Vector array reallocation failed. Count = %ld and Capacity = %ld.\n",
+          vec->count,
+          vec->capacity);
       return 1;
     }
   }
@@ -124,6 +93,17 @@ int lach_LVector_append(LVector* vec, void* data)
   return 0;
 }
 
+/**
+*
+* @brief This function gets the data at the specified index
+*
+* @param vec The vector to index
+* @param index The index to get
+* 
+* @return NULL if failure (vector is null, index >= capacity of vector)
+* otherwise a pointer to the data
+*
+*/
 void* lach_LVector_get(LVector* vec, size_t index)
 {
   if (vec == NULL) {
@@ -132,13 +112,23 @@ void* lach_LVector_get(LVector* vec, size_t index)
   }
   
   if (index >= vec->capacity) {
-    LACH_DEBUG_PRINT("Requested index is out of bounds for vector with %ld capacity.\n", vec->capacity);
+    LACH_DEBUG_PRINT("Requested index is out of bounds for vector with %ld capacity.\n",
+        vec->capacity);
     return NULL;
   }
 
   return vec->array[index];
 }
 
+/**
+*
+* @brief This function frees the vector array and vector
+*
+* @param vec The vector to free
+* 
+* @return 1 for failure (vector is null), 0 for success
+*
+*/
 int lach_LVector_free(LVector* vec)
 {
   if (vec == NULL) {

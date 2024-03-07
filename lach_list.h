@@ -11,19 +11,7 @@ struct LListNode {
   LListNode* next;
 };
 
-LListNode* lach_LListNode_create(void* data);
-int lach_LListNode_append(LListNode* node, void* data);
-void* lach_LListNode_get(LListNode* node, int index);
-void lach_LListNode_free(LListNode* head);
-
-
-//***************************************************************
-// 
-// Implementations
-// 
-//***************************************************************
-
-
+ 
 // TODO: Input checks
 LListNode* lach_LListNode_create(void* data)
 {
