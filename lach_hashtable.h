@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define LACH_HASHTABLE_DEFAULT_CAPACITY 255
+
 typedef struct {
   char* key;
   void* value;
@@ -20,7 +22,16 @@ typedef struct {
 
 LHashNode* lach_LHashNode_create(char* key, void* value)
 {
-  // TODO: Input checks for functions
+  if (key == NULL) {
+    printf("Key is NULL.\n");
+    return NULL;
+  }
+  
+  if (value == NULL) {
+    printf("Value is NULL.\n");
+    return NULL;
+  }
+  
   LHashNode* node = (LHashNode*)calloc(1, sizeof(LHashNode));
   if (node == NULL) {
     printf("lach_HashNode* create_hashnode(char* key, void* value) could not allocate for HashNode.\n");
@@ -35,15 +46,19 @@ LHashNode* lach_LHashNode_create(char* key, void* value)
 
 LHashTable* lach_LHashTable_create(size_t capacity)
 {
+  if (capacity == 0) {
+    capacity = LACH_HASHTABLE_DEFAULT_CAPACITY;
+  }
+  
   LHashTable* table = (LHashTable*)calloc(1, sizeof(LHashTable));
   if (table == NULL) {
-    printf("HashTable* create_hashtable(size_t capacity) could not allocate for HashTable.\n");
+    printf("Failed to allocate HashTable.\n");
     return NULL;
   }
 
   table->array = (LHashNode**)calloc(capacity, sizeof(LHashNode*));
   if (table->array == NULL) {
-    printf("HashTable* create_hashtable(size_t capacity) could not allocate for HashTable array pointer.\n");
+    printf("Failed to allocate HashTable array pointer.\n");
     return NULL;
   }
 
@@ -54,18 +69,43 @@ LHashTable* lach_LHashTable_create(size_t capacity)
 
 int lach_hash(LHashTable* table, char* key)
 {
-    unsigned long val = 0;
-    int c;
+  if (table == NULL) {
+    printf("Table is NULL.\n");
+    return 1;
+  }
   
-    while ((c = *key++)) {
-        val = c + (val << 6) + (val << 16) - val;
-    }
+  if (key == NULL) {
+    printf("Key is NULL.\n");
+    return 1;
+  }
   
-    return val % table->capacity;
+  unsigned long val = 0;
+  int c;
+
+  while ((c = *key++)) {
+      val = c + (val << 6) + (val << 16) - val;
+  }
+
+  return val % table->capacity;
 }
 
 int lach_LHashTable_insert(LHashTable* table, char* key, void* value)
 {
+  if (table == NULL) {
+    printf("Table is NULL.\n");
+    return 1;
+  }
+  
+  if (key == NULL) {
+    printf("Key is NULL.\n");
+    return 1;
+  }
+  
+  if (value == NULL) {
+    printf("Value is NULL.\n");
+    return 1;
+  }
+  
   if (table->count < table->capacity) {
     int i = lach_hash(table, key);
     LHashNode* node = lach_LHashNode_create(key, value);
@@ -80,6 +120,16 @@ int lach_LHashTable_insert(LHashTable* table, char* key, void* value)
 
 void* lach_LHashTable_get(LHashTable* table, char* key)
 {
+  if (table == NULL) {
+    printf("Table is NULL.\n");
+    return 1;
+  }
+  
+  if (key == NULL) {
+    printf("Key is NULL.\n");
+    return 1;
+  }
+  
   int i = lach_hash(table, key);
   LHashNode* node = table->array[i];
   if (node != NULL) {
