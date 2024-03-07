@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define LACH_VECTOR_DEFAULT_CAPACITY 255
+
 typedef struct {
   size_t count;
   size_t capacity;
@@ -67,7 +69,7 @@ int lach_LVector_free(LVector* vec);
 LVector* lach_LVector_create(size_t capacity)
 {
   if (capacity == 0) {
-    capacity = 255; // TODO: Default size #define?
+    capacity = LACH_VECTOR_DEFAULT_CAPACITY;
   }
   
   LVector* vec = (LVector*)calloc(1, sizeof(LVector));
