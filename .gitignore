@@ -1,0 +1,14 @@
+# Ignore compiled object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Ignore executable files
+*.out
+
+# Ignore generated files
+*.a
+*.d
+*.so
+*.so.*
