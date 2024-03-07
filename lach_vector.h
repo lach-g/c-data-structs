@@ -4,6 +4,26 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
+
+
+#ifdef LACH_DEBUG
+#define LACH_DEBUG_PRINT(fmt, ...) \
+    do { \
+        time_t now; \
+        struct tm *local_time; \
+        char timestamp[20]; \
+        time(&now); \
+        local_time = localtime(&now); \
+        strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", local_time); \
+        fprintf(stderr, "[%s] [ERROR] <%s:%d> %s: ", timestamp, __FILE__, __LINE__, __func__); \
+        fprintf(stderr, fmt, ##__VA_ARGS__); \
+    } while (0)
+#else
+#define LACH_DEBUG_PRINT(fmt, ...) \
+    do {} while (0)
+#endif
+
 
 #define LACH_VECTOR_DEFAULT_CAPACITY 255
 
@@ -74,13 +94,13 @@ LVector* lach_LVector_create(size_t capacity)
   
   LVector* vec = (LVector*)calloc(1, sizeof(LVector));
   if (vec == NULL) {
-    printf("Vector allocation failed.\n"); // TODO: Consistent error handling
+    LACH_DEBUG_PRINT("Vector allocation failed.\n");
     return NULL;
   }
 
   vec->array = (void**)calloc(capacity, sizeof(void*));
   if (vec->array == NULL) {
-    printf("Vector array allocation failed. Capacity = %ld.\n", capacity);
+    LACH_DEBUG_PRINT("Vector array allocation failed. Capacity = %ld.\n", capacity);
     return NULL;
   }
 
@@ -95,7 +115,7 @@ int lach_LVector_append(LVector* vec, void* data)
     vec->capacity *= 2;
     vec->array = (void**)realloc(vec->array, vec->capacity * sizeof(void*));
     if (vec->array == NULL) {
-      printf("Vector array reallocation failed. Count = %ld and Capacity = %ld.\n", vec->count, vec->capacity);
+      LACH_DEBUG_PRINT("Vector array reallocation failed. Count = %ld and Capacity = %ld.\n", vec->count, vec->capacity);
       return 1;
     }
   }
@@ -107,12 +127,12 @@ int lach_LVector_append(LVector* vec, void* data)
 void* lach_LVector_get(LVector* vec, size_t index)
 {
   if (vec == NULL) {
-    printf("Vector is NULL.\n");
+    LACH_DEBUG_PRINT("Vector is NULL.\n");
     return NULL;
   }
   
   if (index >= vec->capacity) {
-    printf("Requested index is out of bounds for vector with %ld capacity.\n", vec->capacity);
+    LACH_DEBUG_PRINT("Requested index is out of bounds for vector with %ld capacity.\n", vec->capacity);
     return NULL;
   }
 
@@ -122,7 +142,7 @@ void* lach_LVector_get(LVector* vec, size_t index)
 int lach_LVector_free(LVector* vec)
 {
   if (vec == NULL) {
-    printf("Vector is NULL.\n");
+    LACH_DEBUG_PRINT("Vector is NULL.\n");
     return 1;
   }
 
