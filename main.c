@@ -82,6 +82,8 @@ void test_LHashTable(void)
   assert(maybe_3->id == tag3.id);
   assert(maybe_3->data_type == tag3.data_type);
   assert(maybe_3->value == tag3.value);
+
+  lach_LHashTable_free(table);
 }
 
 void test_LVector(void)

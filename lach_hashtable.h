@@ -103,6 +103,17 @@ void* lach_LHashTable_get(LHashTable* table, char* key)
 }
 
 
-// TODO: FREE!
+int lach_LHashTable_free(LHashTable* table)
+{
+  if (table == NULL) {
+    printf("HashTable is NULL.\n");
+    return 1;
+  }
+
+  free(table->array);
+  free(table);
+  
+  return 0;
+}
 
 #endif
