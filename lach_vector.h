@@ -73,11 +73,22 @@ LVector* lach_LVector_create(size_t capacity)
 * @param vec The vector to append to
 * @param data The data to append to the vector
 * 
-* @return 1 for failure (reallocation failed), 0 for success
+* @return 1 for failure (vector is null, data ptr is null,
+* reallocation failed), 0 for success
 *
 */
 int lach_LVector_append(LVector* vec, void* data)
 {
+  if (vec == NULL) {
+    LACH_DEBUG_PRINT("Vector is NULL\n");
+    return 1;
+  }
+  
+  if (data == NULL) {
+    LACH_DEBUG_PRINT("Data is NULL\n");
+    return 1;
+  }
+  
   if (vec->count++ > vec->capacity) {
     vec->capacity *= 2;
     vec->array = (void**)realloc(vec->array, vec->capacity * sizeof(void*));
