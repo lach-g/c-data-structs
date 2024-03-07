@@ -12,12 +12,16 @@ struct LListNode {
 };
 
  
-// TODO: Input checks
 LListNode* lach_LListNode_create(void* data)
 {
+  if (data == NULL) {
+    printf("Data is NULL.\n");
+    return NULL;
+  }
+  
   LListNode* node = (LListNode*)calloc(1, sizeof(LListNode));
   if (node == NULL) {
-    printf("ListNode* create(void* data) failed to allocate memory\n");
+    printf("Failed to allocate memory\n");
     return NULL;
   }
 
@@ -29,9 +33,19 @@ LListNode* lach_LListNode_create(void* data)
 
 int lach_LListNode_append(LListNode* node, void* data)
 {
+  if (node == NULL) {
+    printf("Node is NULL.\n");
+    return 1;
+  }
+  
+  if (data == NULL) {
+    printf("Data is NULL.\n");
+    return 1;
+  }
+  
   LListNode* new = lach_LListNode_create(data);
   if (new == NULL) {
-    printf("int append(ListNode* node, void* data) failed to create a ListNode\n");
+    printf("Failed to create a ListNode\n");
     return 1;
   }
   
@@ -45,6 +59,11 @@ int lach_LListNode_append(LListNode* node, void* data)
 
 void* lach_LListNode_get(LListNode* node, int index)
 {
+  if (node == NULL) {
+    printf("Node is NULL.\n");
+    return NULL;
+  }
+  
   if (index < 0) {
     printf("Index %d must be 0 or greater.\n", index);
     return NULL;
@@ -64,8 +83,13 @@ void* lach_LListNode_get(LListNode* node, int index)
   return NULL;
 }
 
-void lach_LListNode_free(LListNode* head)
+int lach_LListNode_free(LListNode* head)
 {
+  if (head == NULL) {
+    printf("Head is NULL.\n");
+    return 1;
+  }
+  
   LListNode* curr = head;
   while (curr->next != NULL) {
     LListNode* prev = curr;
@@ -73,6 +97,8 @@ void lach_LListNode_free(LListNode* head)
     free(prev);
   }
   free(curr);
+
+  return 0;
 }
 
 
