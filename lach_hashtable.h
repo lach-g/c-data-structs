@@ -79,14 +79,14 @@ int lach_hash(LHashTable* table, char* key)
     return 1;
   }
   
-  unsigned long val = 0;
+  // Djb2 algo
+  size_t hash = 5381;
   int c;
-
-  while ((c = *key++)) {
-      val = c + (val << 6) + (val << 16) - val;
+  while ((c = *str++)) {
+      hash = ((hash << 5) + hash) + c;
   }
-
-  return val % table->capacity;
+  
+  return hash % table->capacity;
 }
 
 int lach_LHashTable_insert(LHashTable* table, char* key, void* value)
@@ -111,7 +111,7 @@ int lach_LHashTable_insert(LHashTable* table, char* key, void* value)
     LHashNode* node = lach_LHashNode_create(key, value);
     table->array[i] = node;
     table->count++;
-    return 0; // TODO: Error codes?
+    return 0;
   } else {
     printf("HashTable capacity reached, could not insert new key value pair.\n");
     return 1;

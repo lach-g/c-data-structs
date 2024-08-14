@@ -11,7 +11,26 @@ struct LListNode {
   LListNode* next;
 };
 
+typedef struct {
+  size_t count;
+  LListNode** head;
+} LList;
+
  
+LList* lach_LList_create(void)
+{
+  LList** list = (LList**)calloc(1, sizeof(LList*));
+  if (list == NULL) {
+    printf("Failed to allocate memory for List\n");
+    return NULL;
+  }
+
+  list->head = NULL;
+  list->count = 0;
+
+  return list;
+}
+
 LListNode* lach_LListNode_create(void* data)
 {
   if (data == NULL) {
@@ -21,7 +40,7 @@ LListNode* lach_LListNode_create(void* data)
   
   LListNode* node = (LListNode*)calloc(1, sizeof(LListNode));
   if (node == NULL) {
-    printf("Failed to allocate memory\n");
+    printf("Failed to allocate memory for ListNode\n");
     return NULL;
   }
 
@@ -31,10 +50,10 @@ LListNode* lach_LListNode_create(void* data)
   return node;
 }
 
-int lach_LListNode_append(LListNode* node, void* data)
+int lach_LList_append(LList* list, void* data)
 {
-  if (node == NULL) {
-    printf("Node is NULL.\n");
+  if (list == NULL) {
+    printf("List is NULL.\n");
     return 1;
   }
   
@@ -49,6 +68,7 @@ int lach_LListNode_append(LListNode* node, void* data)
     return 1;
   }
   
+  ListNode* node = list->head;
   while (node->next != NULL) {
     node = node->next;
   }
