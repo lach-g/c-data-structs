@@ -4,103 +4,211 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "lach_log.h"
+
 typedef struct LListNode LListNode;
 
 struct LListNode {
-  void* data;
-  LListNode* next;
+  void*         data;   // The pointer to the data stored by the list node.
+  LListNode*    next;   // The next node in the list.
+  LListNode*    prev;   // The previous node in the list.
 };
 
 typedef struct {
-  size_t count;
-  LListNode** head;
+  size_t        count;  // The number of list nodes in the list.
+  size_t        size;   // The size of data type stored by each list node.
+  LListNode*    head;   // The head of the list.
+  LListNode*    tail;   // The tail of the list.
 } LList;
 
- 
-LList* lach_LList_create(void)
+
+/*
+ * Create a doubly-linked list.
+ *
+ * @param size The size of the data type to be stored by each list node.
+ * @return LList* A pointer to the newly allocated list.
+ */
+LList* lach_LList_create(size_t size)
 {
-  LList** list = (LList**)calloc(1, sizeof(LList*));
+  LList* list = (LList*)calloc(1, sizeof(LList));
   if (list == NULL) {
-    printf("Failed to allocate memory for List\n");
+    lach_log(LLOG_ERROR, "Failed to allocate memory for LList.");
     return NULL;
   }
 
-  list->head = NULL;
-  list->count = 0;
+  list->size = size;
 
   return list;
 }
 
-LListNode* lach_LListNode_create(void* data)
+/*
+ * Create a list node with data.
+ *
+ * @param data A pointer to data to allocate and assign to the new list node.
+ * @param size The size of the data type to be stored by the list node.
+ * @return LListNode* A pointer to the newly allocated list node.
+ */
+LListNode* lach_LListNode_create(void* data, size_t size)
 {
   if (data == NULL) {
-    printf("Data is NULL.\n");
+    lach_log(LLOG_ERROR, "Data is NULL.");
     return NULL;
   }
   
   LListNode* node = (LListNode*)calloc(1, sizeof(LListNode));
   if (node == NULL) {
-    printf("Failed to allocate memory for ListNode\n");
+    lach_log(LLOG_ERROR, "Failed to allocate memory for ListNode.");
     return NULL;
   }
 
-  // TODO: Should I copy this in like strdup()?
   node->data = data;
-  node->next = NULL;
+  memcpy(node->data, data, size);
+
   return node;
 }
 
+/*
+ * Add to tail of doubly-linked list.
+ */
 int lach_LList_append(LList* list, void* data)
 {
   if (list == NULL) {
-    printf("List is NULL.\n");
+    lach_log(LLOG_ERROR, "List is NULL.");
+    // TODO: LList error codes
     return 1;
   }
   
   if (data == NULL) {
-    printf("Data is NULL.\n");
+    lach_log(LLOG_ERROR, "Data is NULL.");
     return 1;
   }
   
-  LListNode* new = lach_LListNode_create(data);
-  if (new == NULL) {
-    printf("Failed to create a ListNode\n");
+  LListNode* new_node = lach_LListNode_create(data, list->size);
+  if (new_node == NULL) {
+    lach_log(LLOG_ERROR, "Failed to append new ListNode.");
     return 1;
   }
-  
-  ListNode* node = list->head;
-  while (node->next != NULL) {
-    node = node->next;
+
+  if (list->count == 0) {
+      list->head = new_node;
+      list->tail = new_node;
+  } else {
+      new_node->next = list->tail;
+      list->tail = new_node;
   }
-  
-  node->next = new;
+  list->count++;
+
   return 0;
 }
 
-void* lach_LListNode_get(LListNode* node, int index)
+/*
+ * Add to head of doubly-linked list.
+ */
+int lach_LList_prepend(LList* list, void* data)
+{
+    if (list == NULL) {
+        lach_log(LLOG_ERROR, "List is NULL.");
+        // TODO: LList error codes
+        return 1;
+    }
+
+    if (data == NULL) {
+        lach_log(LLOG_ERROR, "Data is NULL.");
+        return 1;
+    }
+
+    LListNode* new_node = lach_LListNode_create(data, list->size);
+    if (new_node == NULL) {
+        lach_log(LLOG_ERROR, "Failed to append new ListNode.");
+        return 1;
+    }
+
+    if (list->count == 0) {
+        list->head = new_node;
+        list->tail = new_node;
+    } else {
+        new_node->prev = list->head;
+        list->head = new_node;
+    }
+    list->count++;
+
+    return 0;
+}
+
+void* lach_LList_at(LList* list, int index)
 {
   if (node == NULL) {
-    printf("Node is NULL.\n");
+    lach_log(LLOG_ERROR, "Node is NULL.");
     return NULL;
   }
   
   if (index < 0) {
-    printf("Index %d must be 0 or greater.\n", index);
+    lach_log(LLOG_ERROR, "Index %d must be 0 or greater.", index);
     return NULL;
-  }
-  
-  int i = 0;
-  while (i < index && node->next != NULL) {
-    node = node->next;
-    i++;
+  } else if (index >= list->count) {
+      lach_log(LLOG_ERROR, "Index %d must be less than the list count %zu.", index, list->count);
+      return NULL;
   }
 
-  if (i == index) {
-    return node->data;
+  // TODO: Is there a better iterator way than this?
+  int i = 0;
+  for (LListNode* node = list->head; node != NULL; node = node->next) {
+      (i != index) ? i++ : return node;
   }
-  
-  printf("Could not find ListNode at index %d. List ended at index %d", index, i);
+
+  lach_log(LLOG_ERROR, "Could not find ListNode at index %d. List ended at index %d with count.", index, i, list->count);
+
   return NULL;
+}
+
+int lach_LList_insert(LList* list, int index)
+{
+    if (node == NULL) {
+        lach_log(LLOG_ERROR, "Node is NULL.");
+        return NULL;
+    }
+
+    if (index < 0) {
+        lach_log(LLOG_ERROR, "Index %d must be 0 or greater.", index);
+        return NULL;
+    } else if (index >= list->count) {
+        lach_log(LLOG_ERROR, "Index %d must be less than the list count %zu.", index, list->count);
+        return NULL;
+    }
+
+    LListNode* new_node = lach_LListNode_create(data, list->size);
+    if (new_node == NULL) {
+        lach_log(LLOG_ERROR, "Failed to append new ListNode.");
+        return 1;
+    }
+
+    if (list->count == 0) {
+        list->head = new_node;
+        list->tail = new_node;
+    } else {
+        // TODO: Is there a better iterator way than this?
+        int i = 0;
+        for (LListNode* node = list->head; node != NULL; node = node->next) {
+            if (i == index) {
+                if (node->prev) {
+                    node->prev->next = new_node;
+                    new_node->prev = node->prev;
+                } else {
+                    // TODO: was trying to be clever with taking care of tail and head edge cases with middle
+                    // but if 0 index or count - 1 index specified im not sure if this will work... I'm tired w
+                    list->tail = new_node;
+                }
+
+                if (node->next)
+            }
+        }
+
+    }
+
+
+    lach_log(LLOG_ERROR, "Could not find index %d. List ended at index %d with count.", index, i, list->count);
+
+    return 1;
 }
 
 int lach_LListNode_free(LListNode* head)
