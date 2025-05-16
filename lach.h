@@ -2,8 +2,12 @@
 extern "C" {
 #endif
 
-// #define LACH_ALL_H
-#define LACH_LIST_H
+#define LACH_ALL_H
+// #define LACH_LIST_H
+// #define LACH_HASHTABLE_H
+// #define LACH_LOG_H
+// #define LACH_STRING_H
+// #define LACH_VECTOR_H
 
 #ifdef LACH_DEBUG
 #define LACH_DEBUG_PRINT(fmt, ...)                                             \
@@ -109,7 +113,7 @@ int lach_hash(LHashTable *table, char *key) {
   // Djb2 algo
   size_t hash = 5381;
   int c;
-  while ((c = *str++)) {
+  while ((c = *key++)) {
     hash = ((hash << 5) + hash) + c;
   }
 
@@ -500,19 +504,9 @@ const char *lach_log_level_str[] = {"ALWAYS", "FATAL", "ERROR", "WARN",
                                     "INFO",   "DEBUG", "TRACE"};
 
 void lach_log(LLogLevel level, const char *format, ...) {
-  time_t raw_time;
-  struct tm time_info;
+  time_t t = time(NULL);
 
-  time(&raw_time);
-
-  if (localtime_s(&time_info, &raw_time) == 0) {
-    char time_buffer[20];
-    fprintf(stderr, "Error converting time to local time.\n");
-    strftime(time_buffer, 20, "%Y-%m-%d %H:%M:%S", tm_info);
-    fprintf(stderr, "[%s] [%s] ", time_buffer, log_level_str[level]);
-  } else {
-    fprintf(stderr, "[TIMESTAMP FAIL] [%s] ", log_level_str[level]);
-  }
+  fprintf(stderr, "[%s] [%s] ", asctime(localtime(&t)), lach_log_level_str[level]);
 
   // Handle the variable argument list
   va_list args;
