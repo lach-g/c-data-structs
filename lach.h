@@ -43,6 +43,7 @@ extern "C" {
 #endif
 
 typedef struct {
+  // TODO: Could I support other key data types somehow?
   char *key;
   void *value;
 } LHashNode;
@@ -56,17 +57,20 @@ typedef struct {
 
 LHashNode *lach_LHashNode_create(char *key, void *value) {
   if (key == NULL) {
+    // TODO: printf
     printf("Key is NULL.\n");
     return NULL;
   }
 
   if (value == NULL) {
+    // TODO: printf
     printf("Value is NULL.\n");
     return NULL;
   }
 
   LHashNode *node = (LHashNode *)calloc(1, sizeof(LHashNode));
   if (node == NULL) {
+    // TODO: printf
     printf("lach_HashNode* create_hashnode(char* key, void* value) could not "
            "allocate for HashNode.\n");
     return NULL;
@@ -86,12 +90,14 @@ LHashTable *lach_LHashTable_create(size_t capacity) {
 
   LHashTable *table = (LHashTable *)calloc(1, sizeof(LHashTable));
   if (table == NULL) {
+    // TODO: printf
     printf("Failed to allocate HashTable.\n");
     return NULL;
   }
 
   table->array = (LHashNode **)calloc(capacity, sizeof(LHashNode *));
   if (table->array == NULL) {
+    // TODO: printf
     printf("Failed to allocate HashTable array pointer.\n");
     return NULL;
   }
@@ -101,13 +107,16 @@ LHashTable *lach_LHashTable_create(size_t capacity) {
   return table;
 }
 
+// TODO: Would be cool to allow for the substitution of a hash function
 int lach_hash(LHashTable *table, char *key) {
   if (table == NULL) {
+    // TODO: printf
     printf("Table is NULL.\n");
     return 1;
   }
 
   if (key == NULL) {
+    // TODO: printf
     printf("Key is NULL.\n");
     return 1;
   }
@@ -124,16 +133,19 @@ int lach_hash(LHashTable *table, char *key) {
 
 int lach_LHashTable_insert(LHashTable *table, char *key, void *value) {
   if (table == NULL) {
+    // TODO: printf
     printf("Table is NULL.\n");
     return 1;
   }
 
   if (key == NULL) {
+    // TODO: printf
     printf("Key is NULL.\n");
     return 1;
   }
 
   if (value == NULL) {
+    // TODO: printf
     printf("Value is NULL.\n");
     return 1;
   }
@@ -145,6 +157,7 @@ int lach_LHashTable_insert(LHashTable *table, char *key, void *value) {
     table->count++;
     return 0;
   } else {
+    // TODO: printf
     printf(
         "HashTable capacity reached, could not insert new key value pair.\n");
     return 1;
@@ -153,11 +166,13 @@ int lach_LHashTable_insert(LHashTable *table, char *key, void *value) {
 
 void *lach_LHashTable_get(LHashTable *table, char *key) {
   if (table == NULL) {
+    // TODO: printf
     printf("Table is NULL.\n");
     return NULL;
   }
 
   if (key == NULL) {
+    // TODO: printf
     printf("Key is NULL.\n");
     return NULL;
   }
@@ -167,6 +182,7 @@ void *lach_LHashTable_get(LHashTable *table, char *key) {
   if (node != NULL) {
     return node->value;
   } else {
+    // TODO: printf
     printf("HashTable value for key %s not found.\n", key);
     return NULL;
   }
@@ -174,6 +190,7 @@ void *lach_LHashTable_get(LHashTable *table, char *key) {
 
 int lach_LHashTable_free(LHashTable *table) {
   if (table == NULL) {
+    // TODO: printf
     printf("HashTable is NULL.\n");
     return 1;
   }
@@ -211,6 +228,8 @@ typedef struct {
   LListNode *tail; // The tail of the list.
 } LList;
 
+// TODO: Make this logging OR debugging output consistent
+// TODO: Shoul make the callback more generic, but is that necessary?
 // Logging function pointer type
 typedef void (*lach_LList_LoggerCallback)(const char *format, ...);
 
@@ -233,6 +252,7 @@ void lach_LList_setLogger(lach_LList_LoggerCallback callback) {
  */
 LList *lach_LList_create(size_t size) {
   LList *list = (LList *)calloc(1, sizeof(LList));
+  // TODO: Make this into a macro that does the if null check and logging line
   if (list == NULL) {
     if (lach_LList_logger) {
       lach_LList_logger("Failed to allocate memory for LList.");
@@ -321,7 +341,7 @@ int lach_LList_prepend(LList *list, void *data) {
     if (lach_LList_logger) {
       lach_LList_logger("List is NULL.");
     }
-    // TODO: LList error codes
+    // TODO: LList error codes, error codes for each section
     return 1;
   }
 
@@ -459,6 +479,8 @@ int lach_LListNode_free(LListNode *head) {
   return 0;
 }
 
+// TODO: List iterator function
+
 #endif // LACH_LIST_H
 
 /******************************************************************************/
@@ -506,8 +528,11 @@ const char *lach_log_level_str[] = {"ALWAYS", "FATAL", "ERROR", "WARN",
                                     "INFO",   "DEBUG", "TRACE"};
 
 void lach_log(LLogLevel level, const char *format, ...) {
+  // TODO: Check time is OS agnostic
   time_t t = time(NULL);
 
+  // TODO: change to configurable stream
+  // TODO: check streams are OS agnostic
   fprintf(stderr, "[%s] [%s] ", asctime(localtime(&t)),
           lach_log_level_str[level]);
 
@@ -527,6 +552,7 @@ void lach_log(LLogLevel level, const char *format, ...) {
 
 #if defined(LACH_STRING_H) || defined(LACH_ALL_H)
 
+// TODO: Check the headers are OS agnostic
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -537,8 +563,9 @@ void lach_log(LLogLevel level, const char *format, ...) {
 #define LACH_VECTOR_H
 
 typedef struct {
-  size_t len;  // Also equals the index of the null terminator, which is not
-               // counted in the length
+  size_t len; // Also equals the index of the null terminator, which is not
+              // counted in the length
+  // TODO: unsigned char or even a bytes data type?
   char *bytes; // Will always be null terminated
 } LString;
 
@@ -662,28 +689,28 @@ int lach_LString_concat(LString *strA, LString *strB) {
   return 0;
 }
 
-// Extracting a portion of a string based on its position.
+// TODO: Extracting a portion of a string based on its position.
 int lach_LString_substring(LString *str, size_t start_i, size_t end_i);
 
-// Comparing two strings to determine equality.
+// TODO: Comparing two strings to determine equality.
 bool lach_LString_comp(LString *strA, LString *strB);
 
-// Convert to lower case.
+// TODO: Convert to lower case.
 int lach_LString_lower(LString *str);
 
-// Convert to upper case.
+// TODO: Convert to upper case.
 int lach_LString_upper(LString *str);
 
-// Finding the position of the first matching substring within a string.
+// TODO: Finding the position of the first matching substring within a string.
 int lach_LString_forstr(LString *strA, LString *strB);
 //
-// Finding the position of the first matching char within a string.
+// TODO: Finding the position of the first matching char within a string.
 int lach_LString_forchar(LString *strA, char c);
 
-// Removing leading and trailing whitespace characters from a string.
+// TODO: Removing leading and trailing whitespace characters from a string.
 int lach_LString_trim(LString *str);
 
-// Breaking a string into a substring based on a delimiter.
+// TODO: Breaking a string into a substring based on a delimiter.
 int lach_LString_split(char c);
 
 #endif // LACH_STRING_H
@@ -698,6 +725,7 @@ int lach_LString_split(char c);
 #include <stdlib.h>
 #include <time.h>
 
+// TODO: Make vector default capacity configurable
 #define LACH_VECTOR_DEFAULT_CAPACITY 255
 
 typedef struct {
@@ -706,9 +734,10 @@ typedef struct {
   void **array;
 } LVector;
 
+// TODO: Generate doxygen docs
 /**
  *
- * @brief This function creates a vector
+ * @brief Creates a vector
  *
  * @param capacity The size of the initial array within the vector
  *
@@ -761,6 +790,7 @@ int lach_LVector_append(LVector *vec, void *data) {
   }
 
   if (vec->count++ > vec->capacity) {
+    // TODO: Make the growth of the vector configurable
     vec->capacity *= 2;
     vec->array = (void **)realloc(vec->array, vec->capacity * sizeof(void *));
     if (vec->array == NULL) {
@@ -823,6 +853,11 @@ int lach_LVector_free(LVector *vec) {
 }
 
 #endif // LACH_VECTOR_H
+
+// TODO: Arena functionality
+/******************************************************************************/
+// Arena
+/******************************************************************************/
 
 #ifdef __cplusplus
 }
