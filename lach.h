@@ -38,7 +38,9 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef LACH_HASHTABLE_DEFAULT_CAPACITY
 #define LACH_HASHTABLE_DEFAULT_CAPACITY 255
+#endif
 
 typedef struct {
   char *key;
@@ -506,7 +508,8 @@ const char *lach_log_level_str[] = {"ALWAYS", "FATAL", "ERROR", "WARN",
 void lach_log(LLogLevel level, const char *format, ...) {
   time_t t = time(NULL);
 
-  fprintf(stderr, "[%s] [%s] ", asctime(localtime(&t)), lach_log_level_str[level]);
+  fprintf(stderr, "[%s] [%s] ", asctime(localtime(&t)),
+          lach_log_level_str[level]);
 
   // Handle the variable argument list
   va_list args;
